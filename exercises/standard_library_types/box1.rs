@@ -16,12 +16,23 @@
 //
 // Execute `rustlings hint box1` or use the `hint` watch subcommand for a hint.
 
-// I AM NOT DONE
-
 #[derive(PartialEq, Debug)]
-pub enum List {
-    Cons(i32, List),
+pub enum List<T> {
+    Cons(T, Box<List<T>>),
     Nil,
+}
+
+impl<T> List<T> {
+    pub fn new<I>(items: I) -> List<T>
+    // reverse order, but who gives?
+    where
+        I: IntoIterator<Item = T>,
+        T: std::cmp::PartialEq,
+    {
+        items.into_iter().fold(List::Nil, |tail, item| {
+            List::<T>::Cons(item, Box::new(tail))
+        })
+    }
 }
 
 fn main() {
@@ -32,12 +43,12 @@ fn main() {
     );
 }
 
-pub fn create_empty_list() -> List {
-    todo!()
+pub fn create_empty_list() -> List<i32> {
+    List::Nil
 }
 
-pub fn create_non_empty_list() -> List {
-    todo!()
+pub fn create_non_empty_list() -> List<i32> {
+    List::new([1, 3, 3, 7])
 }
 
 #[cfg(test)]
